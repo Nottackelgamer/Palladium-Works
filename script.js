@@ -263,43 +263,48 @@ document.querySelectorAll(".magnetic").forEach(btn=>{
 
 
 /* =====================================================
-   CINEMATIC INTRO SCROLL GATE (FINAL FIX)
+   CINEMATIC INTRO SCROLL GATE (MOBILE FRIENDLY)
    ===================================================== */
 
 const introGate = document.querySelector(".intro-gate");
 const navbar = document.querySelector(".nav");
-
-let introProgress = 0;
 let introFinished = false;
 
-/* lock page */
-
-window.scrollTo(0,0);
-
-window.addEventListener("wheel",(e)=>{
-
+function finishIntro() {
     if(introFinished) return;
+    introFinished = true;
 
-    e.preventDefault();
-
-    introProgress += e.deltaY * 0.0025;
-    introProgress = Math.max(0,Math.min(1,introProgress));
-
-    introGate.style.opacity = 1-introProgress;
-    introGate.style.transform =
-        `scale(${1-introProgress*0.15})`;
-
-    if(introProgress>0.45){
+    // Trigger the CSS transition
+    introGate.style.opacity = "0";
+    introGate.style.transform = "scale(1.1)"; // Slight zoom out looks more premium
+    
+    // Show the navbar slightly before the gate is fully gone
+    setTimeout(() => {
         navbar.classList.add("active");
-    }
+    }, 400);
 
-    if(introProgress>=1){
-        introFinished=true;
-        introGate.style.display="none";
-        document.body.style.overflow="";
-    }
+    // Wait for the CSS transition (1.2s) to finish before deleting the element
+    setTimeout(() => {
+        introGate.style.display = "none";
+        document.body.style.overflow = ""; // Re-enable scrolling
+    }, 1200); 
+}
 
-},{passive:false});
+// 1. Mouse Wheel Support
+window.addEventListener("wheel", (e) => {
+    if(!introFinished && e.deltaY > 10) finishIntro();
+}, {passive: false});
+
+// 2. Mobile Swipe Support
+let touchStart = 0;
+window.addEventListener("touchstart", e => touchStart = e.touches[0].clientY);
+window.addEventListener("touchmove", e => {
+    let touchEnd = e.touches[0].clientY;
+    if(!introFinished && touchStart - touchEnd > 50) finishIntro();
+});
+
+// 3. Click Fallback (Best for Mobile UX)
+introGate.addEventListener("click", finishIntro);
 
 /* ================= SCROLL REVEAL ================= */
 
