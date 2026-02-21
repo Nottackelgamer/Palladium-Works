@@ -414,6 +414,7 @@ color:#c084fc;
     background:#05040a;
     position:fixed;
     inset:0;
+    transition: opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1), transform 1.2s ease;
 }
 
 @keyframes logoGlow {
@@ -623,4 +624,50 @@ transform:translateY(0);
 
 @media (max-width: 900px) {
     .footer-grid { grid-template-columns: 1fr 1fr; }
+}
+
+/* ================= MOBILE OPTIMIZATIONS ================= */
+
+@media (max-width: 768px) {
+    /* Adjust Hero Text Size */
+    .hero-title, .intro-logo {
+        font-size: 42px !important;
+        padding: 0 20px;
+    }
+
+    /* Stack the Nav Links */
+    .nav {
+        padding: 15px 25px;
+    }
+    .nav .links {
+        display: none; /* Simplest fix: hide links on mobile or use a hamburger menu */
+    }
+
+    /* Stack Sections */
+    .about-container {
+        gap: 40px;
+        padding: 0 20px;
+    }
+
+    .section {
+        padding: 80px 20px;
+    }
+
+    /* Fix Process Flow Arrows */
+    .process-flow {
+        flex-direction: column;
+    }
+    .arrow {
+        transform: rotate(90deg);
+        margin: 10px 0;
+    }
+
+    /* Grid adjustments */
+    .why-grid, .card-grid {
+        gap: 20px;
+    }
+    
+    .why-card, .step-card {
+        width: 100%;
+    }
 }
