@@ -149,7 +149,7 @@ const revealObserver = new IntersectionObserver((entries, observer) => {
 
         /* stagger children animations */
         const animatedChildren = entry.target.querySelectorAll(
-            ".card, .why-card, .step-card, .stat"
+            ".card, .why-card, .step-card, .stat, .game-card"
         );
 
         animatedChildren.forEach((el, i) => {
@@ -191,7 +191,7 @@ window.addEventListener("load", () => {
             el.classList.add("active");
 
             el.querySelectorAll(
-                ".card, .why-card, .step-card, .stat"
+                ".card, .why-card, .step-card, .stat, .game-card"
             ).forEach((child,i)=>{
                 child.style.transitionDelay=(i*120)+"ms";
                 child.classList.add("active");
@@ -344,4 +344,28 @@ window.addEventListener("load", () => {
         }, 400 + (i * 220)); // stagger delay
     });
 
+});
+
+
+/* ================= CONTACT MODAL ================= */
+const modal = document.getElementById('contactModal');
+const contactBtn = document.querySelector('.btn-contact');
+const closeBtn = document.querySelector('.close-modal');
+
+// Open Modal
+contactBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    modal.classList.add('active');
+});
+
+// Close Modal
+closeBtn.addEventListener('click', () => {
+    modal.classList.remove('active');
+});
+
+// Close on outside click
+window.addEventListener('click', (e) => {
+    if (e.target === modal) {
+        modal.classList.remove('active');
+    }
 });
