@@ -10,7 +10,6 @@
 html, body {
     overflow-x: hidden;
     width: 100%;
-    cursor: none;
 }
 
 body {
@@ -61,7 +60,7 @@ body::before {
     z-index: 9999;
 }
 
-/* .spotlight {
+.spotlight {
     position: fixed;
     width: 600px;
     height: 600px;
@@ -69,22 +68,9 @@ body::before {
     background: radial-gradient(circle, rgba(139, 92, 246, .18), transparent 60%);
     filter: blur(80px);
     z-index: -1;
-} */
-
-.spotlight {
-    position: fixed;
-    width: 350px;
-    height: 350px;
-    pointer-events: none;
-    /* Changed to a more vibrant purple to match your cards */
-    background: radial-gradient(circle, rgba(139, 92, 246, 0.6), transparent 70%);
-    filter: blur(50px);
-    z-index: 9999; /* Put it above everything */
-    mix-blend-mode: screen; /* Makes it glow against the background */
-
-    transition: width 0.3s ease, height 0.3s ease, background 0.3s ease; /* Smooth transition */
-    transform: translate(-50%, -50%); /* Centers the spotlight on the mouse tip */
 }
+
+
 
 
 
@@ -286,6 +272,10 @@ body::before {
     color: #cfcfff;
     margin-top: 15px;
     font-size: 16px;
+}
+
+.hero-button a{
+    display:contents;
 }
 
 .hero::after {
@@ -807,8 +797,7 @@ body::before {
     margin-bottom: 20px;
 }
 
-.brand-logo {
-    background: #8b5cf6;
+.brand-logo img{
     width: 45px;
     height: 45px;
     display: flex;
@@ -818,6 +807,7 @@ body::before {
     border-radius: 10px;
     font-size: 24px;
 }
+
 
 .brand-header h2 {
     font-size: 18px;
@@ -1145,4 +1135,8 @@ body::before {
     .footer-grid {
         grid-template-columns: 1fr 1fr;
     }
+}
+
+.email{
+    color: #a855f7;
 }
