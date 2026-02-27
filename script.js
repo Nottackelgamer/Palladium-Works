@@ -75,8 +75,8 @@ const spotlight = document.querySelector(".spotlight");
 
 if (spotlight) {
     document.addEventListener("mousemove", e => {
-        spotlight.style.left = (e.clientX - 0) + "px";
-        spotlight.style.top = (e.clientY - 0) + "px";
+        spotlight.style.left = (e.clientX - 300) + "px";
+        spotlight.style.top = (e.clientY - 300) + "px";
     });
 }
 
