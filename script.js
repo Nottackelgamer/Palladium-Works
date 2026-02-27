@@ -75,11 +75,10 @@ const spotlight = document.querySelector(".spotlight");
 
 if (spotlight) {
     document.addEventListener("mousemove", e => {
-        spotlight.style.left = (e.clientX - 300) + "px";
-        spotlight.style.top = (e.clientY - 300) + "px";
+        spotlight.style.left = (e.clientX - 0) + "px";
+        spotlight.style.top = (e.clientY - 0) + "px";
     });
 }
-
 
 /* ================= PARTICLES ================= */
 
@@ -204,22 +203,50 @@ window.addEventListener("load", () => {
 
 /* ================= HERO WIPE ================= */
 
-window.addEventListener("load",()=>{
+// window.addEventListener("load",()=>{
 
-    document.querySelectorAll(".wipe").forEach((line,i)=>{
+//     document.querySelectorAll(".wipe").forEach((line,i)=>{
 
-        const mask=document.createElement("div");
-        mask.style.position="absolute";
-        mask.style.inset="0";
-        mask.style.background="linear-gradient(90deg, #05040a 70%,transparent)";
-        mask.style.transition="1.2s cubic-bezier(.16,1,.3,1)";
+//         const mask=document.createElement("div");
+//         mask.style.position="absolute";
+//         mask.style.inset="0";
+//         mask.style.background="linear-gradient(90deg, #05040a 70%,transparent)";
+//         mask.style.transition="1.2s cubic-bezier(.16,1,.3,1)";
+
+//         line.appendChild(mask);
+
+//         setTimeout(()=>{
+//             mask.style.transform="translateX(110%)";
+//         },400+i*300);
+
+//     });
+// });
+
+window.addEventListener("load", () => {
+    const lines = document.querySelectorAll(".wipe");
+
+    lines.forEach((line, i) => {
+        // Check if the mask already exists to prevent double-animation flickering
+        if (line.querySelector('.wipe-mask')) return;
+
+        const mask = document.createElement("div");
+        mask.classList.add('wipe-mask'); // Added class for tracking
+        mask.style.position = "absolute";
+        mask.style.inset = "0";
+        mask.style.background = "linear-gradient(90deg, #05040a 70%, transparent)";
+        mask.style.transition = "1.2s cubic-bezier(.16,1,.3,1)";
+        mask.style.zIndex = "10";
 
         line.appendChild(mask);
 
-        setTimeout(()=>{
-            mask.style.transform="translateX(110%)";
-        },400+i*300);
-
+        // Force the mask to slide away and STAY away
+        setTimeout(() => {
+            mask.style.transform = "translateX(110%)";
+            // Clean up the mask after animation to prevent it from re-appearing on scroll
+            setTimeout(() => {
+                mask.remove();
+            }, 7300);
+        }, 1200 + (i * 220));
     });
 });
 
@@ -369,3 +396,4 @@ window.addEventListener('click', (e) => {
         modal.classList.remove('active');
     }
 });
+// test
