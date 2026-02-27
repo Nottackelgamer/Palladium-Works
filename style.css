@@ -1003,6 +1003,7 @@ body::before {
         min-height: 180px !important; /* Reduced from 280px */
         padding: 20px !important;
         transform: none !important; /* Removing hover transform to prevent clipping on touch */
+        align-content: center !important;
     }
 
     .card h3 {
@@ -1071,11 +1072,7 @@ body::before {
         padding: 20px !important;
     }
 
-    .card {
-        width: 100% !important;
-        min-height: auto !important;
-    }
-
+ 
     /* Fix: Footer Clipping */
     .footer-grid {
         grid-template-columns: 1fr !important;
@@ -1099,3 +1096,4 @@ body::before {
         grid-template-columns: 1fr 1fr;
     }
 }
+
