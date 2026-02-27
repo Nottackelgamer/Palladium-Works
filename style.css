@@ -1,5 +1,6 @@
 /* ================= GLOBAL ================= */
 
+
 * {
     margin: 0;
     padding: 0;
@@ -9,6 +10,7 @@
 html, body {
     overflow-x: hidden;
     width: 100%;
+    cursor: none;
 }
 
 body {
@@ -59,7 +61,7 @@ body::before {
     z-index: 9999;
 }
 
-.spotlight {
+/* .spotlight {
     position: fixed;
     width: 600px;
     height: 600px;
@@ -67,7 +69,24 @@ body::before {
     background: radial-gradient(circle, rgba(139, 92, 246, .18), transparent 60%);
     filter: blur(80px);
     z-index: -1;
+} */
+
+.spotlight {
+    position: fixed;
+    width: 350px;
+    height: 350px;
+    pointer-events: none;
+    /* Changed to a more vibrant purple to match your cards */
+    background: radial-gradient(circle, rgba(139, 92, 246, 0.6), transparent 70%);
+    filter: blur(50px);
+    z-index: 9999; /* Put it above everything */
+    mix-blend-mode: screen; /* Makes it glow against the background */
+
+    transition: width 0.3s ease, height 0.3s ease, background 0.3s ease; /* Smooth transition */
+    transform: translate(-50%, -50%); /* Centers the spotlight on the mouse tip */
 }
+
+
 
 /* ================= LOADER ================= */
 
@@ -229,7 +248,7 @@ body::before {
     letter-spacing: -1px;
 }
 
-.wipe {
+/* .wipe {
     display: block;
     position: relative;
     overflow: hidden;
@@ -237,6 +256,26 @@ body::before {
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
+} */
+
+/* Update the existing .wipe and .reveal classes in your CSS */
+
+.wipe {
+    display: block;
+    position: relative;
+    overflow: hidden;
+    /* Ensure the text has a base visibility so it doesn't flicker */
+    opacity: 1 !important; 
+    background: linear-gradient(90deg, #a78bfa, #c084fc, #818cf8);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Ensure the hero section doesn't hide itself once it has been seen */
+.hero.reveal.active {
+    opacity: 1 !important;
+    transform: none !important;
 }
 
 .wipe div {
@@ -717,6 +756,7 @@ body::before {
 .staff-email:hover {
     opacity: 1;
     letter-spacing: 0.5px;
+    cursor: pointer;
 }
 
 /* ================= CTA ================= */
@@ -946,6 +986,12 @@ body::before {
 
 /* ================= MOBILE OPTIMIZATIONS ================= */
 
+/* ================= MOBILE OPTIMIZATIONS ================= */
+
+/* ================= MOBILE OPTIMIZATIONS ================= */
+
+/* ================= MOBILE OPTIMIZATIONS ================= */
+
 @media (max-width: 768px) {
     /* 1. Fix "PALLADIUM WORKS" Intro Logo */
     .intro-logo {
@@ -1003,7 +1049,6 @@ body::before {
         min-height: 180px !important; /* Reduced from 280px */
         padding: 20px !important;
         transform: none !important; /* Removing hover transform to prevent clipping on touch */
-        align-content: center !important;
     }
 
     .card h3 {
@@ -1072,7 +1117,12 @@ body::before {
         padding: 20px !important;
     }
 
- 
+    .card {
+        width: 100% !important;
+        min-height: auto !important;
+        align-content: center !important;
+    }
+
     /* Fix: Footer Clipping */
     .footer-grid {
         grid-template-columns: 1fr !important;
@@ -1096,4 +1146,3 @@ body::before {
         grid-template-columns: 1fr 1fr;
     }
 }
-
