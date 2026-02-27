@@ -1,92 +1,286 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Terms of Service | Palladium Works</title>
+    <link rel="icon" type="image/png" href="PW-logo1.png">
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
-        /* Same shared styles as Privacy page for consistency */
-        .policy-body { padding: 120px 20px; }
-        .policy-container { max-width: 900px; margin: 0 auto; padding: 60px; background: rgba(10,10,20,0.8); border: 1px solid rgba(139,92,246,0.3); border-radius: 24px; backdrop-filter: blur(20px); }
-        .header-meta { border-bottom: 1px solid rgba(139,92,246,0.3); padding-bottom: 30px; margin-bottom: 40px; }
-        .header-meta p { color: #8b5cf6; font-weight: 800; letter-spacing: 2px; font-size: 13px; margin-bottom: 5px; }
-        .header-meta h1 { font-size: 52px; margin-bottom: 10px; }
-        .section-block { margin-bottom: 40px; }
-        .section-block h2 { color: #fff; font-size: 26px; margin-bottom: 20px; border-left: 4px solid #8b5cf6; padding-left: 15px; }
-        .section-block p, .policy-list li { color: #cfcfff; line-height: 1.7; margin-bottom: 15px; }
-        .policy-list { list-style: none; padding-left: 10px; }
-        .policy-list li { position: relative; padding-left: 20px; margin-bottom: 10px; }
-        .policy-list li::before { content: "•"; color: #8b5cf6; position: absolute; left: 0; }
-        .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 30px; }
-        .auth-footer { margin-top: 50px; padding-top: 30px; border-top: 1px dashed rgba(139,92,246,0.4); display: flex; justify-content: space-between; }
+        :root {
+            --bg-color: #05040a;
+            --accent-purple: #8b5cf6;
+            --accent-light: #a78bfa;
+            --text-main: #ffffff;
+            --text-muted: #cfcfff;
+            --border-color: rgba(139, 92, 246, 0.3);
+            --glass-bg: rgba(10, 10, 25, 0.8);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+            padding: 80px 20px;
+        }
+
+        /* Cinematic Animated Background */
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            width: 200%;
+            height: 200%;
+            background:
+                radial-gradient(circle at 20% 30%, #6b5cff22, transparent 40%),
+                radial-gradient(circle at 80% 60%, #a855ff22, transparent 40%),
+                radial-gradient(circle at 50% 80%, #7c3aed22, transparent 40%);
+            animation: bgMove 18s linear infinite;
+            z-index: -1;
+        }
+
+        @keyframes bgMove {
+            0% { transform: translate(0, 0); }
+            50% { transform: translate(-5%, -5%); }
+            100% { transform: translate(0, 0); }
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--glass-bg);
+            padding: 60px;
+            border-radius: 24px;
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(20px);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+
+        header { 
+            text-align: center; 
+            border-bottom: 1px solid var(--border-color); 
+            margin-bottom: 40px; 
+            padding-bottom: 30px; 
+        }
+
+        .doc-badge {
+            color: var(--accent-light);
+            font-weight: 800;
+            letter-spacing: 3px;
+            font-size: 12px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        h1 { 
+            font-size: 48px; 
+            background: linear-gradient(90deg, #a78bfa, #c084fc, #818cf8);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 10px 0;
+        }
+
+        h2 { 
+            color: var(--accent-light); 
+            font-size: 24px; 
+            margin-top: 40px; 
+            margin-bottom: 15px;
+            border-left: 4px solid var(--accent-purple);
+            padding-left: 15px;
+        }
+
+        p, li { 
+            color: var(--text-muted);
+            margin-bottom: 15px; 
+            font-weight: 300; 
+        }
+
+        ul { padding-left: 20px; list-style-type: square; }
+        
+        strong { color: var(--text-main); font-weight: 600; }
+
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            margin: 30px 0; 
+            background: rgba(139, 92, 246, 0.05); 
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        th, td { border: 1px solid var(--border-color); padding: 15px; text-align: left; }
+        th { background: rgba(139, 92, 246, 0.2); color: var(--accent-light); text-transform: uppercase; font-size: 11px; letter-spacing: 1px; }
+
+        .auth-footer { 
+            margin-top: 60px; 
+            padding-top: 30px; 
+            border-top: 1px solid var(--border-color);
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .auth-box { 
+            background: rgba(139, 92, 246, 0.1);
+            padding: 20px; 
+            border-radius: 12px; 
+            border: 1px solid var(--border-color);
+        }
+
+        .auth-box p { font-size: 10px; color: var(--accent-light); font-weight: 800; margin: 0; text-transform: uppercase; }
+        .auth-box span { font-size: 16px; font-weight: 600; color: white; }
+
+        @media (max-width: 600px) {
+            .container { padding: 30px 20px; }
+            .auth-footer { grid-template-columns: 1fr; }
+            h1 { font-size: 32px; }
+        }
+
         .home-btn { position: fixed; top: 30px; left: 30px; z-index: 1000; }
     </style>
 </head>
-<body class="policy-body">
-    <canvas id="particles"></canvas>
-    <div class="spotlight"></div>
-
-    <a href="index.html" class="home-btn"><button class="primary magnetic">← HOME</button></a>
-
-    <div class="policy-container">
-        <div class="header-meta">
-            <p>PALLADIUM WORKS // OFFICIAL DOCUMENTATION</p>
+<body>
+    <a href="index.html" class="home-btn" target="_self"><button class="primary magnetic">← HOME</button></a>
+    <div class="container">
+        <header>
+            <p class="doc-badge">Official Documentation</p>
             <h1>Terms of Service</h1>
-            <span>Issued: Dec/17/2025 // Updated: Feb/20/2026</span>
-        </div>
+            <p style="color: var(--text-main);">Palladium Works</p>
+            <p style="font-size: 13px; color: var(--accent-light); margin-top: 10px;">
+                Date issued: Dec/17/2025 at 2:10 a.m. <br>
+                Date updated: Feb/20/2026
+            </p>
+        </header>
 
-        <div class="section-block">
+        <section>
             <h2>1. Introduction</h2>
             <p>Welcome to Palladium Works. These Terms of Service ("Terms") govern your access to and use of all games, services, and community platforms operated by Palladium Works ("we", "us", "our"). If you do not agree, you may not use our services.</p>
-        </div>
+        </section>
 
-        <div class="section-block">
+        <section>
             <h2>2. Age Requirements</h2>
-            <ul class="policy-list">
-                <li>Players under 13 may play our experiences but may not join restricted platforms (Discord).</li>
-                <li>The age requirements for specific ranks or divisions (e.g., Officer Corps) may vary (e.g., 15+).</li>
-                <li>You are responsible for following the age rules of any service you use.</li>
-            </ul>
-        </div>
+            <p>Players under the age of 13 may play our Roblox experiences but may not join restricted platforms (such as Discord) in accordance with platform rules. Players that are aged 13 years or older may access additional community features. Players (aged 13+) are permitted to join the Discord Communications server and may apply for division membership upon successfully fulfilling all outstanding requirements. You are responsible for following the age rules of any service you use. The age requirements (e.g., 15+) for specific ranks, departments, or divisions may vary (e.g., Officer Corps).</p>
+        </section>
 
-        <div class="section-block">
+        <section>
+            <h2>3. Account Responsibility</h2>
+            <p>Your Roblox account must remain in good standing with Roblox Terms of Service/Use. You are responsible for the actions taken on your account. We cannot recover lost accounts, banned accounts, or deleted items caused by Roblox moderation.</p>
+        </section>
+
+        <section>
             <h2>4. Community & Behaviour Expectations</h2>
             <p>By using our services you agree to:</p>
-            <ul class="policy-list">
-                <li>Respect other players and staff members.</li>
-                <li>Follow instructions provided by authorized Palladium Works staff.</li>
-                <li>Avoid toxic behavior, harassment, and discrimination.</li>
-                <li>Maintain the professionalism expected in our community.</li>
+            <ul>
+                <li>Respect other players and staff.</li>
+                <li>Follow all server-specific rules.</li>
+                <li>Avoid hate speech, bullying, harassment, discrimination or threats.</li>
+                <li>Do not engage in exploiting, cheating, bypassing filters, or abusing mechanics. Do not impersonate staff or claim false authority.</li>
             </ul>
-        </div>
+            <p>Violations may lead to moderation actions including warnings, suspension, or permanent removal from our services.</p>
+        </section>
 
-        <div class="section-block">
+        <section>
+            <h2>5. Game Data & Progress</h2>
+            <p>We are not responsible for:</p>
+            <ul>
+                <li>Data loss caused by Roblox outages</li>
+                <li>Player connection issues</li>
+                <li>System failures</li>
+                <li>Roblox issues (such as server connectivity)</li>
+            </ul>
+            <p>We may reset, wipe, or adjust game data during development when necessary.</p>
+        </section>
+
+        <section>
+            <h2>6. Staff & Moderation Authority</h2>
+            <p>By using our services, you acknowledge that:</p>
+            <ul>
+                <li>Moderators have full authority to enforce rules.</li>
+                <li>Decisions may include warnings, temporary bans, or permanent bans. Staff members must follow our internal rules and codes of conduct.</li>
+            </ul>
+            <p>You may submit an appeal following our Appeals Policy.</p>
+        </section>
+
+        <section>
+            <h2>7. Prohibited Activities</h2>
+            <p>The following are strictly forbidden:</p>
+            <ul>
+                <li>Exploiting or distributing exploits</li>
+                <li>Bypassing chat filters or using inappropriate content</li>
+                <li>Selling, trading, or transferring in-game items for real money</li>
+                <li>Attempting to access administrative areas or tools</li>
+                <li>Disrupting gameplay intentionally</li>
+            </ul>
+        </section>
+
+        <section>
             <h2>8. Intellectual Property</h2>
-            <p>All Palladium Works assets—including scripts, logos, branding, and in-game concepts—are owned by Palladium Works and may not be:</p>
-            <ul class="policy-list">
-                <li>Copied or Reuploaded</li>
-                <li>Sold or Distributed</li>
+            <p>All Palladium Works assets—including scripts, logos, branding, and in game concepts are owned by Palladium Works and may not be:</p>
+            <ul>
+                <li>Copied</li>
+                <li>Reuploaded</li>
+                <li>Sold</li>
+                <li>Distributed</li>
                 <li>Modified without permission</li>
             </ul>
-        </div>
+            <p>Unauthorized use may result in legal or platform-level action.</p>
+        </section>
 
-        <div class="section-block">
+        <section>
+            <h2>9. Changes to the Terms</h2>
+            <p>We may update these Terms at any time. Continued use of our services after changes means you accept the updated Terms.</p>
+        </section>
+
+        <section>
             <h2>10. Contact</h2>
-            <div class="contact-grid">
-                <div class="contact-item"><p>Founder: PalladiumWorks26@gmail.com</p></div>
-                <div class="contact-item"><p>IA/GA Discord Server</p></div>
-            </div>
-        </div>
+            <p>For any Terms of Service related questions you may contact us at:</p>
+            <ul>
+                <li>Founder & Chairman of Palladium Works: <div class="email">PalladiumWorks26@gmail.com</div></li>
+                <li>Co-Founder & Vice Chairman of Palladium Works: <div class="email">Mulderdestroyer@gmail.com</div></li>
+                <li>Board Director of Palladium Works: <div class="email">GroupsInquiries@gmail.com</div></li>
+            </ul>
+            <p>Internal Affairs, General Affairs. Palladium Works Internal Affairs Department Discord Server, Palladium Works Game contacts.</p>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Mail</th>
+                        <th>Game</th>
+                        <th>Rank</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>aStarEmpress@gmail.com</td>
+                        <td>TGIA</td>
+                        <td>Palladium Works Staff TGIA Representative</td>
+                    </tr>
+                    <tr>
+                        <td>135Stev.Rbx@gmail.com</td>
+                        <td>Wizbound</td>
+                        <td>Palladium Works Staff WizBound Representative</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
 
         <div class="auth-footer">
-            <div class="auth-box"><span>Auth: Mulderdestroyer</span></div>
-            <div class="auth-box"><span>Review: DayMage535</span></div>
+            <div class="auth-box">
+                <p>Authorized By:</p>
+                <span>DayMage535 // Founder & Chairman</span>
+            </div>
+            <div class="auth-box">
+                <p>Reviewed By:</p>
+                <span>Mulderdestroyer // Co-Founder & Vice Chairman</span>
+            </div>
         </div>
+        <p style="text-align: center; margin-top: 30px; font-size: 11px; color: var(--accent-light);">© 2026 Palladium Works. All Rights Reserved.</p>
     </div>
-    <script src="script.js"></script>
 </body>
 </html>
