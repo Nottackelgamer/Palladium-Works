@@ -1,78 +1,123 @@
 /* =====================================================
-   PALLADIUM CINEMATIC ENGINE — FINAL STABLE BUILD
+   PALLADIUM CINEMATIC ENGINE — ULTIMATE FULL BUILD
    ===================================================== */
 
-/* ================= FORCE TOP ON RELOAD ================= */
-
+/** * BROWSER RESET 
+ * Prevents the browser from jumping to a middle-page scroll 
+ * position on refresh, which breaks the intro gate.
+ **/
 if ("scrollRestoration" in history) {
     history.scrollRestoration = "manual";
 }
-
 window.onbeforeunload = () => window.scrollTo(0,0);
 
-
-/* ================= LOADER ================= */
-
-/* ================= INTRO SCROLL GATE ================= */
-
+/* ================= GLOBAL SELECTORS ================= */
 const loader = document.getElementById("loader");
-
-let introClosed = false;
-
-function closeIntro(){
-    if(introClosed) return;
-
-    introClosed = true;
-    loader.classList.add("hide");
-
-    // remove completely after fade
-    setTimeout(()=>{
-        loader.style.display = "none";
-    },900);
-}
-
-/* close when user scrolls slightly */
-window.addEventListener("wheel", e=>{
-    if(window.scrollY < 10 && e.deltaY > 5){
-        closeIntro();
-    }
-});
-
-/* mobile support */
-window.addEventListener("touchmove", ()=>{
-    if(window.scrollY > 5){
-        closeIntro();
-    }
-});
-
-/* fallback — never trap user */
-setTimeout(closeIntro, 4000);
-
-
-/* ================= SMOOTH SCROLL ================= */
-
-document.documentElement.style.scrollBehavior = "smooth";
-
-
-/* ================= SCROLL PROGRESS ================= */
-
+const introGate = document.querySelector(".intro-gate");
+const navbar = document.querySelector(".nav");
+const scrollIndicator = document.querySelector('.scroll-indicator');
 const progress = document.querySelector(".scroll-progress");
-
-window.addEventListener("scroll", () => {
-    if (!progress) return;
-
-    const h = document.documentElement;
-    const scrolled =
-        h.scrollTop / (h.scrollHeight - h.clientHeight);
-
-    progress.style.width = (scrolled * 100) + "%";
-});
-
-
-/* ================= SPOTLIGHT ================= */
-
+const canvas = document.getElementById("particles");
 const spotlight = document.querySelector(".spotlight");
 
+/* ================= STATE MANAGEMENT ================= */
+let introClosed = false;   // Stage 1: Loader Finished
+let gateOpened = false;    // Stage 2: Hero Gate Opened
+let startY = 0;            // Support for Mobile Swipe
+
+/* ================= INTRO & UNLOCK LOGIC ================= */
+
+/**
+ * PHASE 1: closeLoader
+ * Closes the initial blinking text/logo loader.
+ **/
+function closeLoader() {
+    if(introClosed) return;
+    introClosed = true;
+
+    if(loader) {
+        loader.classList.add("hide");
+        setTimeout(() => {
+            loader.style.display = "none";
+        }, 850);
+    }
+
+    // Show the "Scroll Down" mouse icon once loader is gone
+    if(scrollIndicator) scrollIndicator.classList.add('active');
+}
+
+/**
+ * PHASE 2: finishIntro
+ * This is the "Key" that unlocks your stuck page.
+ **/
+function finishIntro() {
+    if(gateOpened || !introClosed) return; 
+    gateOpened = true;
+
+    introGate.style.opacity = "0";
+    introGate.style.transform = "scale(1.1)";
+
+    // THE MASTER UNLOCK
+    document.body.classList.add("unlocked");
+    document.documentElement.classList.add("unlocked"); // Targets the <html> tag
+    
+    // Inline safety overrides
+    document.body.style.overflow = "visible";
+    document.body.style.position = "relative";
+    document.documentElement.style.overflow = "visible";
+
+    if(scrollIndicator) scrollIndicator.style.opacity = "0";
+
+    setTimeout(() => {
+        navbar.classList.add("active");
+    }, 400);
+
+    setTimeout(() => {
+        introGate.style.display = "none";
+    }, 1200); 
+}
+
+/* ================= INTERACTION ENGINES ================= */
+
+// Auto-timer for loader (2 blinks)
+setTimeout(closeLoader, 2200); 
+
+// Skip/Click Listeners
+if(loader) loader.addEventListener("click", closeLoader);
+if(introGate) introGate.addEventListener("click", finishIntro);
+
+// Scroll/Wheel Detection
+window.addEventListener("wheel", (e) => {
+    if(!gateOpened && e.deltaY > 5) finishIntro();
+}, {passive: true});
+
+// Mobile Swipe Detection
+window.addEventListener("touchstart", (e) => {
+    startY = e.touches[0].pageY;
+}, {passive: true});
+
+window.addEventListener("touchmove", (e) => {
+    if(gateOpened) return;
+    let moveY = e.touches[0].pageY;
+    if (startY - moveY > 40) finishIntro(); 
+}, {passive: true});
+
+// Scroll Progress Bar & Indicator Cleanup
+window.addEventListener("scroll", () => {
+    if (progress) {
+        const h = document.documentElement;
+        const scrolled = h.scrollTop / (h.scrollHeight - h.clientHeight);
+        progress.style.width = (scrolled * 100) + "%";
+    }
+
+    if (window.scrollY > 100 && scrollIndicator) {
+        scrollIndicator.classList.remove('active');
+    }
+}, { passive: true });
+
+/* ================= VISUAL EFFECTS ENGINE ================= */
+
+// 1. Spotlight Mouse Follow
 if (spotlight) {
     document.addEventListener("mousemove", e => {
         spotlight.style.left = (e.clientX - 300) + "px";
@@ -80,320 +125,127 @@ if (spotlight) {
     });
 }
 
-/* ================= PARTICLES ================= */
-
-const canvas = document.getElementById("particles");
-
+// 2. Interactive Particles
 if (canvas) {
-
     const ctx = canvas.getContext("2d");
-
-    function resizeCanvas(){
+    const particles = [];
+    
+    function resize() {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
     }
+    window.addEventListener("resize", resize);
+    resize();
 
-    resizeCanvas();
-    window.addEventListener("resize", resizeCanvas);
-
-    const particles=[];
-
-    for(let i=0;i<70;i++){
+    for(let i=0; i<80; i++) {
         particles.push({
-            x:Math.random()*canvas.width,
-            y:Math.random()*canvas.height,
-            vx:(Math.random()-0.5)*0.25,
-            vy:(Math.random()-0.5)*0.25,
-            size:Math.random()*2+0.5
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            vx: (Math.random() - 0.5) * 0.3,
+            vy: (Math.random() - 0.5) * 0.3,
+            size: Math.random() * 2 + 0.5
         });
     }
 
-    function animate(){
+    function render() {
         ctx.clearRect(0,0,canvas.width,canvas.height);
-
-        particles.forEach(p=>{
-            p.x+=p.vx;
-            p.y+=p.vy;
-
-            if(p.x<0||p.x>canvas.width) p.vx*=-1;
-            if(p.y<0||p.y>canvas.height) p.vy*=-1;
-
+        ctx.fillStyle = "rgba(167, 139, 250, 0.5)";
+        particles.forEach(p => {
+            p.x += p.vx; p.y += p.vy;
+            if(p.x < 0 || p.x > canvas.width) p.vx *= -1;
+            if(p.y < 0 || p.y > canvas.height) p.vy *= -1;
             ctx.beginPath();
-            ctx.arc(p.x,p.y,p.size,0,Math.PI*2);
-            ctx.fillStyle="rgba(139,92,246,0.6)";
+            ctx.arc(p.x, p.y, p.size, 0, Math.PI*2);
             ctx.fill();
         });
-
-        requestAnimationFrame(animate);
+        requestAnimationFrame(render);
     }
-
-    animate();
+    render();
 }
 
-
-/* ================= STAGGER REVEAL ================= */
-
-/* =====================================================
-   CINEMATIC STAGGER REVEAL ENGINE (FULL RESTORE)
-   ===================================================== */
-
-const revealObserver = new IntersectionObserver((entries, observer) => {
-
+// 3. Intersection Observer (Reveal on Scroll)
+const revealOptions = { threshold: 0.15, rootMargin: "0px 0px -50px 0px" };
+const revealObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
-
         if (!entry.isIntersecting) return;
-
-        /* activate parent */
         entry.target.classList.add("active");
-
-        /* stagger children animations */
-        const animatedChildren = entry.target.querySelectorAll(
-            ".card, .why-card, .step-card, .stat, .game-card"
-        );
-
-        animatedChildren.forEach((el, i) => {
-
-            el.style.transitionDelay = (i * 120) + "ms";
-
-            requestAnimationFrame(() => {
-                el.classList.add("active");
-            });
+        
+        const children = entry.target.querySelectorAll(".card, .why-card, .step-card, .stat, .game-card");
+        children.forEach((child, i) => {
+            child.style.transitionDelay = (i * 120) + "ms";
+            child.classList.add("active");
         });
-
-        observer.unobserve(entry.target);
+        revealObserver.unobserve(entry.target);
     });
+}, revealOptions);
 
-},{
-    threshold: 0.18,
-    rootMargin: "0px 0px -80px 0px"
-});
-
-
-/* observe ALL cinematic blocks */
-document.querySelectorAll(
-    ".section, .about-left, .about-right, .why-grid, .process-flow"
-).forEach(el => {
-
+document.querySelectorAll(".section, .about-left, .about-right, .why-grid, .process-flow, .game-grid").forEach(el => {
     el.classList.add("reveal");
     revealObserver.observe(el);
 });
 
-
-/* safety: reveal elements already in view after load */
+// 4. Hero Wipe Animation
 window.addEventListener("load", () => {
-
-    document.querySelectorAll(".reveal").forEach(el => {
-
-        const rect = el.getBoundingClientRect();
-
-        if (rect.top < window.innerHeight * 0.9) {
-            el.classList.add("active");
-
-            el.querySelectorAll(
-                ".card, .why-card, .step-card, .stat, .game-card"
-            ).forEach((child,i)=>{
-                child.style.transitionDelay=(i*120)+"ms";
-                child.classList.add("active");
-            });
-        }
-    });
-
-});
-
-
-/* ================= HERO WIPE ================= */
-
-// window.addEventListener("load",()=>{
-
-//     document.querySelectorAll(".wipe").forEach((line,i)=>{
-
-//         const mask=document.createElement("div");
-//         mask.style.position="absolute";
-//         mask.style.inset="0";
-//         mask.style.background="linear-gradient(90deg, #05040a 70%,transparent)";
-//         mask.style.transition="1.2s cubic-bezier(.16,1,.3,1)";
-
-//         line.appendChild(mask);
-
-//         setTimeout(()=>{
-//             mask.style.transform="translateX(110%)";
-//         },400+i*300);
-
-//     });
-// });
-
-window.addEventListener("load", () => {
-    const lines = document.querySelectorAll(".wipe");
-
-    lines.forEach((line, i) => {
-        // Check if the mask already exists to prevent double-animation flickering
-        if (line.querySelector('.wipe-mask')) return;
-
+    document.querySelectorAll(".wipe").forEach((line, i) => {
         const mask = document.createElement("div");
-        mask.classList.add('wipe-mask'); // Added class for tracking
-        mask.style.position = "absolute";
-        mask.style.inset = "0";
-        mask.style.background = "linear-gradient(90deg, #05040a 70%, transparent)";
-        mask.style.transition = "1.2s cubic-bezier(.16,1,.3,1)";
-        mask.style.zIndex = "10";
-
+        mask.className = "wipe-mask";
+        mask.style.cssText = "position:absolute; inset:0; background:linear-gradient(90deg, #05040a 70%, transparent); transition:1.5s cubic-bezier(.16,1,.3,1); z-index:10;";
         line.appendChild(mask);
 
-        // Force the mask to slide away and STAY away
         setTimeout(() => {
             mask.style.transform = "translateX(110%)";
-            // Clean up the mask after animation to prevent it from re-appearing on scroll
-            setTimeout(() => {
-                mask.remove();
-            }, 7300);
-        }, 1200 + (i * 220));
-    });
-});
-
-
-/* ================= TILT ================= */
-
-document.querySelectorAll(".tilt").forEach(card=>{
-
-    card.addEventListener("mousemove",e=>{
-        const r=card.getBoundingClientRect();
-        const rx=((e.clientY-r.top)/r.height-0.5)*-12;
-        const ry=((e.clientX-r.left)/r.width-0.5)*12;
-
-        card.style.transform=`rotateX(${rx}deg) rotateY(${ry}deg)`;
-    });
-
-    card.addEventListener("mouseleave",()=>{
-        card.style.transform="rotateX(0) rotateY(0)";
-    });
-
-});
-
-
-/* ================= MAGNETIC BUTTON ================= */
-
-document.querySelectorAll(".magnetic").forEach(btn=>{
-
-    btn.addEventListener("mousemove",e=>{
-        const r=btn.getBoundingClientRect();
-        const x=e.clientX-r.left-r.width/2;
-        const y=e.clientY-r.top-r.height/2;
-
-        btn.style.transform=`translate(${x*0.2}px,${y*0.2}px)`;
-    });
-
-    btn.addEventListener("mouseleave",()=>{
-        btn.style.transform="translate(0,0)";
-    });
-
-});
-
-
-/* =====================================================
-   CINEMATIC INTRO SCROLL GATE (MOBILE FRIENDLY)
-   ===================================================== */
-
-const introGate = document.querySelector(".intro-gate");
-const navbar = document.querySelector(".nav");
-let introFinished = false;
-
-function finishIntro() {
-    if(introFinished) return;
-    introFinished = true;
-
-    // Trigger the CSS transition
-    introGate.style.opacity = "0";
-    introGate.style.transform = "scale(1.1)"; // Slight zoom out looks more premium
-    
-    // Show the navbar slightly before the gate is fully gone
-    setTimeout(() => {
-        navbar.classList.add("active");
-    }, 400);
-
-    // Wait for the CSS transition (1.2s) to finish before deleting the element
-    setTimeout(() => {
-        introGate.style.display = "none";
-        document.body.style.overflow = ""; // Re-enable scrolling
-    }, 1200); 
-}
-
-// 1. Mouse Wheel Support
-window.addEventListener("wheel", (e) => {
-    if(!introFinished && e.deltaY > 10) finishIntro();
-}, {passive: false});
-
-// 2. Mobile Swipe Support
-let touchStart = 0;
-window.addEventListener("touchstart", e => touchStart = e.touches[0].clientY);
-window.addEventListener("touchmove", e => {
-    let touchEnd = e.touches[0].clientY;
-    if(!introFinished && touchStart - touchEnd > 50) finishIntro();
-});
-
-// 3. Click Fallback (Best for Mobile UX)
-introGate.addEventListener("click", finishIntro);
-
-/* ================= SCROLL REVEAL ================= */
-
-const reveals = document.querySelectorAll(".reveal");
-
-function revealOnScroll(){
-  const trigger = window.innerHeight * 0.85;
-
-  reveals.forEach(el=>{
-    const top = el.getBoundingClientRect().top;
-    if(top < trigger){
-      el.classList.add("active");
-    }
-  });
-}
-
-window.addEventListener("scroll",revealOnScroll);
-revealOnScroll();
-
-/* ================= ACCORDION ================= */
-
-document.querySelectorAll(".acc-item").forEach(item=>{
-  item.addEventListener("click",()=>{
-    item.classList.toggle("active");
-  });
-});
-
-/* ===== HERO CINEMATIC STAGGER ===== */
-
-window.addEventListener("load", () => {
-
-    const lines = document.querySelectorAll(".wipe");
-
-    lines.forEach((line, i) => {
-        setTimeout(() => {
             line.classList.add("active");
-        }, 400 + (i * 220)); // stagger delay
+            setTimeout(() => mask.remove(), 6000);
+        }, 1200 + (i * 200));
     });
-
 });
 
+/* ================= COMPONENT INTERACTIVITY ================= */
 
-/* ================= CONTACT MODAL ================= */
+// Tilt Cards
+document.querySelectorAll(".tilt").forEach(card => {
+    card.addEventListener("mousemove", e => {
+        const r = card.getBoundingClientRect();
+        const x = ((e.clientX - r.left) / r.width - 0.5) * 15;
+        const y = ((e.clientY - r.top) / r.height - 0.5) * -15;
+        card.style.transform = `rotateX(${y}deg) rotateY(${x}deg)`;
+    });
+    card.addEventListener("mouseleave", () => card.style.transform = "rotateX(0) rotateY(0)");
+});
+
+// Magnetic Buttons
+document.querySelectorAll(".magnetic").forEach(btn => {
+    btn.addEventListener("mousemove", e => {
+        const r = btn.getBoundingClientRect();
+        const x = (e.clientX - r.left - r.width/2) * 0.3;
+        const y = (e.clientY - r.top - r.height/2) * 0.3;
+        btn.style.transform = `translate(${x}px, ${y}px)`;
+    });
+    btn.addEventListener("mouseleave", () => btn.style.transform = "translate(0,0)");
+});
+
+// Accordion & Modals
+document.querySelectorAll(".acc-item").forEach(item => {
+    item.addEventListener("click", () => item.classList.toggle("active"));
+});
+
 const modal = document.getElementById('contactModal');
 const contactBtn = document.querySelector('.btn-contact');
 const closeBtn = document.querySelector('.close-modal');
 
-// Open Modal
-contactBtn.addEventListener('click', (e) => {
-    e.preventDefault();
-    modal.classList.add('active');
+if(contactBtn && modal) {
+    contactBtn.addEventListener('click', (e) => { e.preventDefault(); modal.classList.add('active'); });
+    closeBtn.addEventListener('click', () => modal.classList.remove('active'));
+    window.addEventListener('click', (e) => { if(e.target === modal) modal.classList.remove('active'); });
+}
+
+// Smooth Scrolling for all Hyperlinks
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if(target) target.scrollIntoView({ behavior: 'smooth' });
+    });
 });
 
-// Close Modal
-closeBtn.addEventListener('click', () => {
-    modal.classList.remove('active');
-});
-
-// Close on outside click
-window.addEventListener('click', (e) => {
-    if (e.target === modal) {
-        modal.classList.remove('active');
-    }
-});
-// test
+console.log("Palladium Cinematic Engine: 100% Loaded.");
