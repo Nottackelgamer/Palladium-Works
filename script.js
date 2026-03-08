@@ -248,4 +248,10 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     });
 });
 
+document.querySelectorAll(".section h2, .section-title, .section-header, .section span").forEach(el => {
+    el.classList.add("reveal"); // Ensure they have the base reveal class
+    revealObserver.observe(el); // Tell the observer to watch them
+});
+
 console.log("Palladium Cinematic Engine: 100% Loaded.");
+
