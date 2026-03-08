@@ -7,9 +7,82 @@
     box-sizing: border-box;
 }
 
+/* Hide scrollbar for Chrome, Safari and Opera */
+.unlocked::-webkit-scrollbar,
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+    display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.unlocked,
+html,
+body {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
+/* 1. Force the lock by default */
 html, body {
-    overflow-x: hidden;
+    height: 100%;
+    overflow: hidden !important; /* Total lock */
+    position: fixed; /* Prevents "bounce" scrolling on mobile */
     width: 100%;
+}
+
+/* 2. The key to unlock everything */
+/* 2. The key to unlock everything */
+body.unlocked, 
+html.unlocked {
+    height: auto !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    position: relative !important; /* Forces it out of the 'fixed' state */
+}
+
+/* Scroll Down Indicator Animation */
+.scroll-indicator {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: opacity 1s ease 0.5s; 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    pointer-events: none;
+    z-index: 100;
+}
+
+.scroll-indicator.active {
+    opacity: 0.7;
+}
+
+.mouse-icon {
+    width: 22px;
+    height: 36px;
+    border: 2px solid #a78bfa;
+    border-radius: 12px;
+    position: relative;
+}
+
+.mouse-wheel {
+    width: 3px;
+    height: 6px;
+    background: #a78bfa;
+    position: absolute;
+    top: 6px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 2px;
+    animation: scrollWheel 1.8s infinite;
+}
+
+@keyframes scrollWheel {
+    0% { transform: translate(-50%, 0); opacity: 1; }
+    100% { transform: translate(-50%, 15px); opacity: 0; }
 }
 
 body {
@@ -75,7 +148,6 @@ body::before {
 
 
 /* ================= LOADER ================= */
-
 #loader {
     position: fixed;
     inset: 0;
@@ -84,27 +156,109 @@ body::before {
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: opacity 0.9s ease, visibility 0.9s ease;
+    transition: opacity 0.8s ease;
 }
 
-#loader.hide {
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
+/* Keeps everything inside neat and tidy */
+/* 1. Remove the fixed width from the wrapper to let text expand */
+.loader-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px; /* Increased gap for a more premium feel */
+    width: 100%; /* Let it take full width */
 }
 
+/* 2. Restore the large, wide text look */
 .loader-text {
-    font-size: 42px;
-    letter-spacing: 8px;
+    font-size: 42px; /* Increased from 32px */
+    letter-spacing: 12px; /* Increased for that premium "wide" look */
     color: #a855f7;
-    animation: pulse 2s infinite;
+    text-shadow: 0 0 20px rgba(168, 85, 247, 0.6);
+    text-transform: uppercase;
+    font-weight: 800;
+    white-space: nowrap; /* Forces it into a single line */
+    
+    animation: pulse 1.5s infinite ease-in-out;
+    
+    transform: translateZ(0);
+    will-change: opacity;
 }
 
+/* The container: Thinned out to make the bar look sleeker */
+.loader-progress-container {
+    width: 320px; /* Made slightly longer to emphasize the thin tips */
+    height: 3px;  /* Reduced height for a thinner profile */
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 20px;
+    overflow: hidden;
+    position: relative;
+}
+
+.loader-progress-bar {
+    width: 0%;
+    height: 100%;
+    background: #a855f7;
+    box-shadow: 0 0 15px #a855f7;
+    position: relative;
+    
+    /* THE NEEDLE TAPER:
+       Points 1 & 6: Start at 50% height (the "needle" tip)
+       Points 2 & 5: Quickly expand to full height at 10% of the width
+       Points 3 & 4: Stay at full height until 90% of the width
+       Points 7 & 8: Close back to 50% height at the end
+    */
+    clip-path: polygon(
+        0% 50%,     /* Left Tip Start */
+        10% 0%,     /* Transition to parallel top */
+        90% 0%,     /* Parallel top end */
+        100% 50%,   /* Right Tip */
+        90% 100%,   /* Transition to parallel bottom */
+        10% 100%    /* Parallel bottom end */
+    );
+    
+    animation: fillProgress 2.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* The Pulse Keyframes */
 @keyframes pulse {
-    0%, 100% { opacity: .4; }
-    50% { opacity: 1; }
+    0%, 100% { 
+        opacity: 0.4;
+        text-shadow: 0 0 10px rgba(168, 85, 247, 0); /* Glow off */
+    }
+    50% { 
+        opacity: 1; 
+        text-shadow: 0 0 20px rgba(168, 85, 247, 0.5); /* Soft glow on */
+    }
 }
 
+
+/* The "Power Surge" highlight moving inside the bar */
+.loader-progress-bar::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg, 
+        transparent, 
+        rgba(255, 255, 255, 0.6), 
+        transparent
+    );
+    animation: shimmer 1s infinite;
+}
+
+@keyframes fillProgress {
+    0% { width: 0%; filter: brightness(1); }
+    70% { filter: brightness(1.5); } /* Brightens up as it nears completion */
+    100% { width: 100%; filter: brightness(1.2); }
+}
+
+@keyframes shimmer {
+    100% { left: 100%; }
+}
 /* ================= INTRO GATE ================= */
 
 .intro-gate {
@@ -208,6 +362,19 @@ body::before {
     transform-style: preserve-3d;
 }
 
+/* Using your specific class from index.html */
+/* Prevent GPU Ghosting on Hero Text */
+.hero, .hero-title, .hero-sub, .hero-button {
+    /* Forces the browser to keep these elements on their own layer */
+    transform: translateZ(0); 
+    backface-visibility: hidden;
+    perspective: 1000;
+}
+
+/* Ensure the wipe animation doesn't leave a ghost mask */
+.wipe-mask {
+    pointer-events: none;
+}
 .hero-bg {
     position: absolute;
     top: -20%;
@@ -976,13 +1143,17 @@ body::before {
 
 /* ================= MOBILE OPTIMIZATIONS ================= */
 
-/* ================= MOBILE OPTIMIZATIONS ================= */
-
-/* ================= MOBILE OPTIMIZATIONS ================= */
-
-/* ================= MOBILE OPTIMIZATIONS ================= */
 
 @media (max-width: 768px) {
+
+/* 2. The key to unlock everything */
+body.unlocked {
+    height: auto !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    position: relative !important; /* This allows links and scrolling to work again */
+}
+
     /* 1. Fix "PALLADIUM WORKS" Intro Logo */
     .intro-logo {
         font-size: 28px !important; /* Shrunk significantly to prevent horizontal scroll */
