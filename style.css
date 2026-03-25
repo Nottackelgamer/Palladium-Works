@@ -1311,3 +1311,13 @@ body.unlocked {
 .email{
     color: #a855f7;
 }
+
+/* AUTO-UNLOCK for Privacy & Terms Pages */
+/* If the intro gate is missing, we must release the fixed position */
+html:not(:has(.intro-gate)),
+body:not(:has(.intro-gate)) {
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    position: relative !important;
+    height: auto !important;
+}
